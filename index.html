@@ -24,11 +24,11 @@
         <form id="calculation-form" class="space-y-4">
             <div>
                 <label for="riverMile" class="block text-sm font-medium text-gray-700">River Mile</label>
-                <input type="number" id="riverMile" name="riverMile" placeholder="e.g., 20.5" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                <input type="text" id="riverMile" name="riverMile" placeholder="e.g., 20.5" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
             </div>
             <div>
                 <label for="riverWidth" class="block text-sm font-medium text-gray-700">River Width (ft)</label>
-                <input type="number" id="riverWidth" name="riverWidth" placeholder="e.g., 100" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                <input type="number" id="riverWidth" name="riverWidth" placeholder="e.g., 100" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
             </div>
             <div>
                 <label for="driftTime" class="block text-sm font-medium text-gray-700">Drift Time (min)</label>
@@ -44,15 +44,19 @@
             </div>
             <div>
                 <label for="current" class="block text-sm font-medium text-gray-700">Current (knots)</label>
-                <input type="number" id="current" name="current" placeholder="e.g., 1.5" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                <input type="number" id="current" name="current" placeholder="e.g., 1.5" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
             </div>
             <div>
                 <label for="boomLength" class="block text-sm font-medium text-gray-700">Boom Length (ft)</label>
-                <input type="number" id="boomLength" name="boomLength" placeholder="e.g., 50" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                <input type="number" id="boomLength" name="boomLength" placeholder="e.g., 50" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
             </div>
             <div>
                 <label for="angle" class="block text-sm font-medium text-gray-700">Deployment Angle (degrees)</label>
-                <input type="number" id="angle" name="angle" placeholder="e.g., 60" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                <input type="number" id="angle" name="angle" placeholder="e.g., 60" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
+            </div>
+            <div>
+                <label for="report" class="block text-sm font-medium text-gray-700">Report</label>
+                <textarea id="report" name="report" rows="3" placeholder="Enter additional notes or observations here..." class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"></textarea>
             </div>
             <button type="submit" class="w-full bg-blue-600 text-white rounded-md py-2 text-lg font-semibold hover:bg-blue-700 transition-colors">
                 Calculate & Save
@@ -156,7 +160,7 @@
                 
                 const angleRad = calculatedAngle * Math.PI / 180;
                 const calculatedBoomLength = riverWidth / Math.sin(angleRad);
-                boomLengthInput.value = (Math.ceil(calculatedBoomLength / 50) * 50);
+                boomLengthInput.value = isFinite(calculatedBoomLength) ? (Math.ceil(calculatedBoomLength / 50) * 50) : '';
                 return;
             }
 
@@ -209,15 +213,15 @@
             stopTimer(); // Stop the timer when the form is submitted
             
             const form = event.target;
-            const riverMile = parseFloat(form.riverMile.value);
+            const riverMile = form.riverMile.value;
             const riverWidth = parseFloat(form.riverWidth.value);
             const driftTime = form.driftTime.value ? parseFloat(form.driftTime.value) : null;
             const current = parseFloat(form.current.value);
             const boomLength = parseFloat(form.boomLength.value);
             const angle = parseFloat(form.angle.value);
 
-            if (isNaN(riverMile) || isNaN(riverWidth) || isNaN(current) || isNaN(boomLength) || isNaN(angle)) {
-                showMessage('Please fill in all required fields with valid numbers.', 'bg-red-100 text-red-700');
+            if (!riverMile || isNaN(riverWidth) || isNaN(current) || isNaN(boomLength) || isNaN(angle)) {
+                showMessage('Please fill in all required fields.', 'bg-red-100 text-red-700');
                 return;
             }
 
@@ -225,7 +229,7 @@
             const segments = requiredAnchors + 1;
             const segmentLength = boomLength / segments;
             const anchorInterval = boomLength / requiredAnchors;
-            const report = `River Mile: ${riverMile}, Current: ${current.toFixed(1)} knots, Boom Length: ${boomLength} ft, Angle: ${angle} degrees`;
+            const report = form.report.value;
 
             const data = {
                 riverMile: riverMile,
