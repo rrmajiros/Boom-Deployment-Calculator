@@ -1,14 +1,9 @@
 {
-  "functions": {
-    "api/save-report.js": {
-      "runtime": "nodejs18.x"
-    }
-  },
-  "routes": [
-    {
-      "src": "/api/save-report",
-      "methods": ["POST"],
-      "dest": "api/save-report.js"
-    }
-  ]
+  "name": "tva-boom-calculator-vercel",
+  "version": "1.0.0",
+  "description": "A Vercel function for the TVA Boom Calculator.",
+  "main": "api/save-report.js",
+  "dependencies": {
+    "airtable": "^0.11.6"
+  }
 }
