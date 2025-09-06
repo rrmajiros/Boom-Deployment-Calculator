@@ -30,7 +30,7 @@ module.exports = async (req, res) => {
 
         const base = Airtable.base(baseId);
 
-        const record = await base('Boom Deployments').create([{
+        const record = await base('Ops Reports').create([{
             "fields": {
                 "River Mile": riverMile,
                 "River Width (ft)": riverWidth,
