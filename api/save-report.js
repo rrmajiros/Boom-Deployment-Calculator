@@ -1,3 +1,4 @@
+
 const Airtable = require('airtable');
 
 // Configure Airtable with your API key and base ID
@@ -19,54 +20,45 @@ const base = new Airtable({
   apiKey: AIRTABLE_API_KEY
 }).base(AIRTABLE_BASE_ID);
 
-exports.handler = async (event, context) => {
-  if (event.httpMethod !== 'POST') {
-    return {
-      statusCode: 405,
-      body: JSON.stringify({
-        message: 'Method Not Allowed'
-      }),
-    };
+module.exports = async (req, res) => {
+  if (req.method !== 'POST') {
+    return res.status(405).json({
+      message: 'Method Not Allowed'
+    });
   }
 
   try {
-    const data = JSON.parse(event.body);
+    const data = req.body;
 
     // Debugging: Log the incoming data to see what the client is sending
     console.log('Received data:', data);
 
-    const record = await base('Boom Deployments').create([{
+    const record = await base('Ops Reports').create([{
       fields: {
-        "River Mile": data["River Mile"],
-        "Current": data["Current"],
-        "Drift Time": data["Drift Time"],
-        "River Width": data["River Width"],
-        "Segments": data["Segments"],
-        "Seg Length": data["Seg Length"],
-        "Boom Length": data["Boom Length"],
-        "Angle": data["Angle"],
-        "Anchor Interval": data["Anchor Interval"],
-        "Anchors": data["Anchors"],
-        "Report": data["Report"]
+        "River Mile": data.riverMile,
+        "Current": parseFloat(data.current),
+        "Drift Time": data.driftTime,
+        "River Width": parseFloat(data.riverWidth),
+        "Segments": parseFloat(data.segments),
+        "Seg Length": parseFloat(data.segLength),
+        "Boom Length": parseFloat(data.boomLength),
+        "Angle": parseFloat(data.angle),
+        "Anchor Interval": parseFloat(data.anchorInterval),
+        "Anchors": parseFloat(data.anchors),
+        "Report": data.report
       }
     }]);
 
     console.log('Record created successfully:', record[0].id);
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        message: 'Report saved successfully!',
-        id: record[0].id
-      }),
-    };
+    return res.status(200).json({
+      message: 'Report saved successfully!',
+      id: record[0].id
+    });
   } catch (error) {
     console.error('Failed to create record:', error);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({
-        message: `Failed to save report. Error: ${error.message}`
-      }),
-    };
+    return res.status(500).json({
+      message: `Failed to save report. Error: ${error.message}`
+    });
   }
 };
