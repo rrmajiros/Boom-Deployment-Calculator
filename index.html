@@ -228,30 +228,30 @@
             const report = `River Mile: ${riverMile}, Current: ${current.toFixed(1)} knots, Boom Length: ${boomLength} ft, Angle: ${angle} degrees`;
 
             const data = {
-                riverMile: riverMile,
-                current: current,
-                boomLength: boomLength,
-                angle: angle,
-                anchors: requiredAnchors,
-                segments: segments,
-                segmentLength: segmentLength,
-                report: report,
-                riverWidth: riverWidth,
-                driftTime: driftTime,
-                anchorInterval: anchorInterval
+                "River Mile": riverMile,
+                "Current": current,
+                "Boom Length": boomLength,
+                "Angle": angle,
+                "Anchors": requiredAnchors,
+                "Segments": segments,
+                "Seg Length": segmentLength,
+                "Report": report,
+                "River Width": riverWidth,
+                "Drift Time": driftTime,
+                "Anchor Interval": anchorInterval
             };
 
-            document.getElementById('output-riverMile').textContent = data.riverMile;
-            document.getElementById('output-current').textContent = data.current.toFixed(1);
-            document.getElementById('output-boomLength').textContent = data.boomLength;
-            document.getElementById('output-angle').textContent = data.angle;
-            document.getElementById('output-anchors').textContent = data.anchors;
-            document.getElementById('output-segments').textContent = data.segments;
-            document.getElementById('output-segmentLength').textContent = data.segmentLength.toFixed(2);
-            document.getElementById('output-report').textContent = data.report;
-            document.getElementById('output-riverWidth').textContent = data.riverWidth;
-            document.getElementById('output-driftTime').textContent = data.driftTime;
-            document.getElementById('output-anchorInterval').textContent = data.anchorInterval.toFixed(2);
+            document.getElementById('output-riverMile').textContent = data["River Mile"];
+            document.getElementById('output-current').textContent = data["Current"].toFixed(1);
+            document.getElementById('output-boomLength').textContent = data["Boom Length"];
+            document.getElementById('output-angle').textContent = data["Angle"];
+            document.getElementById('output-anchors').textContent = data["Anchors"];
+            document.getElementById('output-segments').textContent = data["Segments"];
+            document.getElementById('output-segmentLength').textContent = data["Seg Length"].toFixed(2);
+            document.getElementById('output-report').textContent = data["Report"];
+            document.getElementById('output-riverWidth').textContent = data["River Width"];
+            document.getElementById('output-driftTime').textContent = data["Drift Time"];
+            document.getElementById('output-anchorInterval').textContent = data["Anchor Interval"].toFixed(2);
             document.getElementById('results').classList.remove('hidden');
 
             try {
