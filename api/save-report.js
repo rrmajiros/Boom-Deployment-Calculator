@@ -32,16 +32,16 @@ module.exports = async (req, res) => {
 
         const record = await base('Ops Reports').create([{
             "fields": {
-                "River Mile": riverMile,
-                "River Width (ft)": riverWidth,
+                "River Mile": parseFloat(riverMile),
+                "River Width (ft)": parseFloat(riverWidth),
                 "Drift Time (min)": driftTime,
-                "Current (knots)": current,
-                "Boom Length (ft)": boomLength,
-                "Deployment Angle (degrees)": angle,
-                "Required Anchors": anchors,
-                "Number of Segments": segments,
-                "Segment Length": segmentLength,
-                "Anchor Interval": anchorInterval,
+                "Current (knots)": parseFloat(current),
+                "Boom Length (ft)": parseFloat(boomLength),
+                "Deployment Angle (degrees)": parseFloat(angle),
+                "Required Anchors": parseFloat(anchors),
+                "Number of Segments": parseFloat(segments),
+                "Segment Length": parseFloat(segmentLength),
+                "Anchor Interval": parseFloat(anchorInterval),
                 "Report": report,
                 "Timestamp": new Date().toISOString()
             }
