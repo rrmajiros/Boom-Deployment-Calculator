@@ -255,6 +255,7 @@
             document.getElementById('results').classList.remove('hidden');
 
             try {
+                // This is the updated fetch call for the Vercel function
                 const response = await fetch('/api/save-report', {
                     method: 'POST',
                     headers: {
