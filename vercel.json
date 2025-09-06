@@ -1,7 +1,6 @@
 {
   "name": "tva-boom-calculator-vercel",
   "version": "1.0.0",
-  "description": "A Vercel function for the TVA Boom Calculator.",
   "main": "api/save-report.js",
   "dependencies": {
     "airtable": "^0.11.6"
