@@ -1,4 +1,3 @@
-
 const Airtable = require('airtable');
 
 // Configure Airtable with your API key and base ID
@@ -35,16 +34,16 @@ module.exports = async (req, res) => {
 
     const record = await base('Ops Reports').create([{
       fields: {
-        "River Mile": data.riverMile,
-        "Current": parseFloat(data.current),
+        "River Mile": data.riverMile ? data.riverMile.toString() : '',
+        "Current": data.current,
         "Drift Time": data.driftTime,
-        "River Width": parseFloat(data.riverWidth),
-        "Segments": parseFloat(data.segments),
-        "Seg Length": parseFloat(data.segLength),
-        "Boom Length": parseFloat(data.boomLength),
-        "Angle": parseFloat(data.angle),
-        "Anchor Interval": parseFloat(data.anchorInterval),
-        "Anchors": parseFloat(data.anchors),
+        "River Width": data.riverWidth,
+        "Segments": data.segments,
+        "Seg Length": data.segmentLength,
+        "Boom Length": data.boomLength,
+        "Angle": data.angle,
+        "Anchor Interval": data.anchorInterval,
+        "Anchors": data.anchors,
         "Report": data.report
       }
     }]);
@@ -56,9 +55,8 @@ module.exports = async (req, res) => {
       id: record[0].id
     });
   } catch (error) {
-    console.error('Failed to create record:', error);
-    return res.status(500).json({
-      message: `Failed to save report. Error: ${error.message}`
-    });
+      const errorMessage = `Failed to save report. Error: ${error.message}`;
+      console.error('Failed to create record:', errorMessage);
+      return res.status(500).json({ message: errorMessage });
   }
 };
