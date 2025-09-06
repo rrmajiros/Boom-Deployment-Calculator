@@ -2,6 +2,7 @@ const Airtable = require('airtable');
 
 module.exports = async (req, res) => {
     try {
+        console.log("Incoming request body:", req.body); // Added for debugging
         const {
             riverMile,
             riverWidth,
@@ -32,16 +33,16 @@ module.exports = async (req, res) => {
 
         const record = await base('Ops Reports').create([{
             "fields": {
-                "River Mile": parseFloat(riverMile),
-                "River Width (ft)": parseFloat(riverWidth),
+                "River Mile": riverMile || '', // Ensure a string is always sent
+                "River Width (ft)": riverWidth,
                 "Drift Time (min)": driftTime,
-                "Current (knots)": parseFloat(current),
-                "Boom Length (ft)": parseFloat(boomLength),
-                "Deployment Angle (degrees)": parseFloat(angle),
-                "Required Anchors": parseFloat(anchors),
-                "Number of Segments": parseFloat(segments),
-                "Segment Length": parseFloat(segmentLength),
-                "Anchor Interval": parseFloat(anchorInterval),
+                "Current (knots)": current,
+                "Boom Length (ft)": boomLength,
+                "Deployment Angle (degrees)": angle,
+                "Required Anchors": anchors,
+                "Number of Segments": segments,
+                "Segment Length": segmentLength,
+                "Anchor Interval": anchorInterval,
                 "Report": report,
                 "Timestamp": new Date().toISOString()
             }
