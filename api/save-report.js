@@ -1,62 +1,72 @@
 const Airtable = require('airtable');
 
-module.exports = async (req, res) => {
-    try {
-        console.log("Incoming request body:", req.body); // Added for debugging
-        const {
-            riverMile,
-            riverWidth,
-            driftTime,
-            current,
-            boomLength,
-            angle,
-            anchors,
-            segments,
-            segmentLength,
-            report,
-            anchorInterval
-        } = req.body;
+// Configure Airtable with your API key and base ID
+const {
+  AIRTABLE_API_KEY,
+  AIRTABLE_BASE_ID
+} = process.env;
 
-        // Vercel environment variables are accessed via process.env
-        const apiKey = process.env.AIRTABLE_API_KEY;
-        const baseId = process.env.AIRTABLE_BASE_ID;
+if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
+  return {
+    statusCode: 500,
+    body: JSON.stringify({
+      message: 'Airtable API key and base ID are not configured.'
+    }),
+  };
+}
 
-        if (!apiKey || !baseId) {
-            return res.status(500).json({ message: "Airtable environment variables not configured." });
-        }
+const base = new Airtable({
+  apiKey: AIRTABLE_API_KEY
+}).base(AIRTABLE_BASE_ID);
 
-        Airtable.configure({
-            apiKey: apiKey,
-        });
+exports.handler = async (event, context) => {
+  if (event.httpMethod !== 'POST') {
+    return {
+      statusCode: 405,
+      body: JSON.stringify({
+        message: 'Method Not Allowed'
+      }),
+    };
+  }
 
-        const base = Airtable.base(baseId);
+  try {
+    const data = JSON.parse(event.body);
 
-        const record = await base('Ops Reports').create([{
-            "fields": {
-                "River Mile": riverMile || '', // Ensure a string is always sent
-                "River Width (ft)": riverWidth,
-                "Drift Time (min)": driftTime,
-                "Current (knots)": current,
-                "Boom Length (ft)": boomLength,
-                "Deployment Angle (degrees)": angle,
-                "Required Anchors": anchors,
-                "Number of Segments": segments,
-                "Segment Length": segmentLength,
-                "Anchor Interval": anchorInterval,
-                "Report": report,
-                "Timestamp": new Date().toISOString()
-            }
-        }]);
+    // Debugging: Log the incoming data to see what the client is sending
+    console.log('Received data:', data);
 
-        res.status(200).json({
-            message: "Report saved successfully!",
-            recordId: record[0].id
-        });
+    const record = await base('Boom Deployments').create([{
+      fields: {
+        "River Mile": data["River Mile"],
+        "Current": data["Current"],
+        "Drift Time": data["Drift Time"],
+        "River Width": data["River Width"],
+        "Segments": data["Segments"],
+        "Seg Length": data["Seg Length"],
+        "Boom Length": data["Boom Length"],
+        "Angle": data["Angle"],
+        "Anchor Interval": data["Anchor Interval"],
+        "Anchors": data["Anchors"],
+        "Report": data["Report"]
+      }
+    }]);
 
-    } catch (error) {
-        console.error("Serverless Function Error:", error);
-        res.status(500).json({
-            message: `Internal Server Error: ${error.message}`
-        });
-    }
+    console.log('Record created successfully:', record[0].id);
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        message: 'Report saved successfully!',
+        id: record[0].id
+      }),
+    };
+  } catch (error) {
+    console.error('Failed to create record:', error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({
+        message: `Failed to save report. Error: ${error.message}`
+      }),
+    };
+  }
 };
