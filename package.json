@@ -1,8 +1,12 @@
 {
-  "name": "tva-boom-calculator-vercel",
+  "name": "tva-deployment-calculator",
   "version": "1.0.0",
-  "main": "api/save-report.js",
+  "description": "A calculator for TVA boom deployments.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
   "dependencies": {
-    "airtable": "^0.11.6"
+    "airtable": "^0.12.0"
   }
 }
