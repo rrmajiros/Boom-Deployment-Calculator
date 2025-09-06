@@ -1,0 +1,14 @@
+{
+  "functions": {
+    "api/save-report.js": {
+      "runtime": "nodejs18.x"
+    }
+  },
+  "routes": [
+    {
+      "src": "/api/save-report",
+      "methods": ["POST"],
+      "dest": "api/save-report.js"
+    }
+  ]
+}
