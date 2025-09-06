@@ -5,171 +5,256 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TVA Boom Deployment Calculator</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f3f4f6;
-            color: #1f2937;
         }
     </style>
 </head>
-<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center p-4">
-    <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl w-full max-w-2xl border border-gray-700">
-        <h1 class="text-4xl font-bold text-center text-blue-400 mb-2">Boom Deployment Calculator</h1>
-        <p class="text-center text-gray-400 mb-8">TVA Ops Report</p>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center p-4">
 
-        <form id="calculatorForm" class="space-y-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label for="riverMile" class="block text-sm font-medium text-gray-300">River Mile</label>
-                    <input type="text" id="riverMile" name="riverMile" class="mt-1 block w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-200 focus:ring-blue-500 focus:border-blue-500" placeholder="Enter River Mile" required>
-                </div>
-                <div>
-                    <label for="current" class="block text-sm font-medium text-gray-300">Current (fps)</label>
-                    <input type="number" step="0.01" id="current" name="current" class="mt-1 block w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-200 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., 2.5" required>
-                </div>
-            </div>
-            
+    <div id="app" class="bg-white rounded-xl shadow-2xl p-6 sm:p-8 w-full max-w-lg mb-6">
+        <h1 class="text-3xl sm:text-4xl font-bold text-center text-gray-800 mb-2">TVA Boom Deployment Calculator</h1>
+        <p class="text-center text-gray-500 mb-6">
+            Calculate deployment requirements and save your report to Airtable.
+        </p>
+
+        <form id="calculation-form" class="space-y-4">
             <div>
-                <label for="driftTime" class="block text-sm font-medium text-gray-300">Drift Time (mm:ss)</label>
-                <input type="text" id="driftTime" name="driftTime" class="mt-1 block w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-200 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., 01:30" required>
+                <label for="riverMile" class="block text-sm font-medium text-gray-700">River Mile</label>
+                <input type="number" id="riverMile" name="riverMile" placeholder="e.g., 20.5" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
             </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label for="riverWidth" class="block text-sm font-medium text-gray-300">River Width (ft)</label>
-                    <input type="number" step="0.01" id="riverWidth" name="riverWidth" class="mt-1 block w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-200 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., 500" required>
-                </div>
-                <div>
-                    <label for="segments" class="block text-sm font-medium text-gray-300">Segments</label>
-                    <input type="number" id="segments" name="segments" class="mt-1 block w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-200 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., 8" required>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label for="segLength" class="block text-sm font-medium text-gray-300">Seg Length (ft)</label>
-                    <input type="number" step="0.01" id="segLength" name="segLength" class="mt-1 block w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-200 focus:ring-blue-500 focus:border-blue-500" placeholder="Calculated" readonly>
-                </div>
-                <div>
-                    <label for="boomLength" class="block text-sm font-medium text-gray-300">Boom Length (ft)</label>
-                    <input type="number" step="0.01" id="boomLength" name="boomLength" class="mt-1 block w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-200 focus:ring-blue-500 focus:border-blue-500" placeholder="Calculated" readonly>
-                </div>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label for="angle" class="block text-sm font-medium text-gray-300">Angle (°)</label>
-                    <input type="number" step="0.01" id="angle" name="angle" class="mt-1 block w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-200 focus:ring-blue-500 focus:border-blue-500" placeholder="Calculated" readonly>
-                </div>
-                <div>
-                    <label for="anchorInterval" class="block text-sm font-medium text-gray-300">Anchor Interval (ft)</label>
-                    <input type="number" step="0.01" id="anchorInterval" name="anchorInterval" class="mt-1 block w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-200 focus:ring-blue-500 focus:border-blue-500" placeholder="Calculated" readonly>
-                </div>
-            </div>
-
             <div>
-                <label for="anchors" class="block text-sm font-medium text-gray-300">Anchors</label>
-                <input type="number" id="anchors" name="anchors" class="mt-1 block w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-200 focus:ring-blue-500 focus:border-blue-500" placeholder="Calculated" readonly>
+                <label for="riverWidth" class="block text-sm font-medium text-gray-700">River Width (ft)</label>
+                <input type="number" id="riverWidth" name="riverWidth" placeholder="e.g., 100" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
             </div>
-
             <div>
-                <label for="report" class="block text-sm font-medium text-gray-300">Report</label>
-                <textarea id="report" name="report" rows="4" class="mt-1 block w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-200 focus:ring-blue-500 focus:border-blue-500" placeholder="Enter additional details here..."></textarea>
+                <label for="driftTime" class="block text-sm font-medium text-gray-700">Drift Time (min)</label>
+                <input type="number" id="driftTime" name="driftTime" placeholder="Start timer to measure" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
             </div>
-            
             <div class="flex justify-center space-x-4">
-                <button type="button" onclick="calculate()" class="w-full sm:w-auto px-6 py-2 bg-green-600 text-white font-semibold rounded-md shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors">
-                    Calculate
+                <button type="button" id="timer-btn" class="bg-indigo-600 text-white rounded-md py-2 px-6 text-sm font-semibold hover:bg-indigo-700 transition-colors">
+                    Start Timer
                 </button>
-                <button type="submit" id="saveButton" class="w-full sm:w-auto px-6 py-2 bg-blue-600 text-white font-semibold rounded-md shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
-                    Save Report
+                <button type="button" id="reset-btn" class="bg-gray-500 text-white rounded-md py-2 px-6 text-sm font-semibold hover:bg-gray-600 transition-colors">
+                    Reset Timer
                 </button>
             </div>
+            <div>
+                <label for="current" class="block text-sm font-medium text-gray-700">Current (knots)</label>
+                <input type="number" id="current" name="current" placeholder="e.g., 1.5" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+            </div>
+            <div>
+                <label for="boomLength" class="block text-sm font-medium text-gray-700">Boom Length (ft)</label>
+                <input type="number" id="boomLength" name="boomLength" placeholder="e.g., 50" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+            </div>
+            <div>
+                <label for="angle" class="block text-sm font-medium text-gray-700">Deployment Angle (degrees)</label>
+                <input type="number" id="angle" name="angle" placeholder="e.g., 60" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+            </div>
+            <button type="submit" class="w-full bg-blue-600 text-white rounded-md py-2 text-lg font-semibold hover:bg-blue-700 transition-colors">
+                Calculate & Save
+            </button>
         </form>
-        
-        <div id="message" class="mt-6 text-center text-sm font-medium"></div>
+
+        <div id="results" class="mt-8 hidden">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">Deployment Report</h2>
+            <div class="bg-gray-50 rounded-lg p-4 space-y-2 text-gray-600">
+                <p><strong>River Mile:</strong> <span id="output-riverMile"></span></p>
+                <p><strong>Current:</strong> <span id="output-current"></span> knots</p>
+                <p><strong>Boom Length:</strong> <span id="output-boomLength"></span> ft</p>
+                <p><strong>Deployment Angle:</strong> <span id="output-angle"></span>°</p>
+                <p><strong>Required Anchors:</strong> <span id="output-anchors"></span></p>
+                <p><strong>Number of Segments:</strong> <span id="output-segments"></span></p>
+                <p><strong>Segment Length:</strong> <span id="output-segmentLength"></span> ft</p>
+                <p><strong>Total Report:</strong> <span id="output-report"></span></p>
+                <p><strong>River Width:</strong> <span id="output-riverWidth"></span> ft</p>
+                <p><strong>Drift Time:</strong> <span id="output-driftTime"></span> min</p>
+                <p><strong>Anchor Interval:</strong> <span id="output-anchorInterval"></span> ft</p>
+            </div>
+        </div>
+        <div id="message-box" class="mt-4 hidden p-4 rounded-md text-center"></div>
     </div>
-
+    
     <script>
-        document.getElementById('calculatorForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // This is the crucial line to prevent duplicate submissions
-            saveReport();
-        });
+        const timerBtn = document.getElementById('timer-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const driftTimeInput = document.getElementById('driftTime');
+        const riverWidthInput = document.getElementById('riverWidth');
+        const currentInput = document.getElementById('current');
+        const boomLengthInput = document.getElementById('boomLength');
+        const angleInput = document.getElementById('angle');
 
-        function calculate() {
-            try {
-                const current = parseFloat(document.getElementById('current').value);
-                const driftTime = document.getElementById('driftTime').value;
-                const riverWidth = parseFloat(document.getElementById('riverWidth').value);
-                const segments = parseFloat(document.getElementById('segments').value);
+        let timerInterval;
+        let isRunning = false;
+        let startTime = 0;
+        let elapsedTime = 0;
 
-                if (isNaN(current) || isNaN(riverWidth) || isNaN(segments) || !driftTime) {
-                    displayMessage('Please fill in all required fields.', 'text-red-400');
-                    return;
-                }
-
-                const [minutes, seconds] = driftTime.split(':').map(Number);
-                if (isNaN(minutes) || isNaN(seconds)) {
-                    displayMessage('Invalid drift time format. Use mm:ss.', 'text-red-400');
-                    return;
-                }
-                const driftTimeInSeconds = minutes * 60 + seconds;
-
-                const segLength = (current * driftTimeInSeconds).toFixed(2);
-                const boomLength = (segLength * segments).toFixed(2);
-                const angleRad = Math.asin(riverWidth / boomLength);
-                const angleDeg = (angleRad * 180 / Math.PI).toFixed(2);
-                const anchorInterval = (boomLength / segments).toFixed(2);
-                const anchors = segments + 1;
-
-                document.getElementById('segLength').value = segLength;
-                document.getElementById('boomLength').value = boomLength;
-                document.getElementById('angle').value = angleDeg;
-                document.getElementById('anchorInterval').value = anchorInterval;
-                document.getElementById('anchors').value = anchors;
-
-                displayMessage('Calculations complete!', 'text-green-400');
-            } catch (error) {
-                displayMessage('An error occurred during calculation.', 'text-red-400');
-                console.error('Calculation error:', error);
-            }
+        function startTimer() {
+            if (isRunning) return;
+            isRunning = true;
+            startTime = Date.now() - elapsedTime;
+            timerBtn.textContent = 'Stop Timer';
+            timerBtn.classList.remove('bg-indigo-600');
+            timerBtn.classList.add('bg-red-600');
+            
+            timerInterval = setInterval(() => {
+                elapsedTime = Date.now() - startTime;
+                const minutes = (elapsedTime / 60000).toFixed(2);
+                driftTimeInput.value = minutes;
+                updateCalculatedFields();
+            }, 100);
         }
 
-        async function saveReport() {
-            try {
-                const riverMile = document.getElementById('riverMile').value;
-                const current = document.getElementById('current').value;
-                const driftTime = document.getElementById('driftTime').value;
-                const riverWidth = document.getElementById('riverWidth').value;
-                const segments = document.getElementById('segments').value;
-                const segLength = document.getElementById('segLength').value;
-                const boomLength = document.getElementById('boomLength').value;
-                const angle = document.getElementById('angle').value;
-                const anchorInterval = document.getElementById('anchorInterval').value;
-                const anchors = document.getElementById('anchors').value;
-                const report = document.getElementById('report').value;
+        function stopTimer() {
+            if (!isRunning) return;
+            isRunning = false;
+            clearInterval(timerInterval);
+            timerBtn.textContent = 'Start Timer';
+            timerBtn.classList.remove('bg-red-600');
+            timerBtn.classList.add('bg-indigo-600');
+        }
 
-                if (!riverMile || !current || !driftTime || !riverWidth || !segments || !segLength || !boomLength || !angle || !anchorInterval || !anchors) {
-                    displayMessage('Please perform the calculations first.', 'text-red-400');
+        function resetTimer() {
+            stopTimer();
+            elapsedTime = 0;
+            driftTimeInput.value = '';
+            currentInput.value = '';
+            boomLengthInput.value = '';
+            angleInput.value = '';
+        }
+
+        timerBtn.addEventListener('click', () => {
+            if (isRunning) {
+                stopTimer();
+            } else {
+                startTimer();
+            }
+        });
+
+        resetBtn.addEventListener('click', resetTimer);
+        
+        // This is the core calculation engine. It decides which values to calculate based on available inputs.
+        function updateCalculatedFields() {
+            const riverWidth = parseFloat(riverWidthInput.value);
+            const driftTime = parseFloat(driftTimeInput.value);
+            const currentKnots = parseFloat(currentInput.value);
+            const boomLength = parseFloat(boomLengthInput.value);
+            const angle = parseFloat(angleInput.value);
+            
+            const nauticalMilesPerFoot = 1 / 6076.12;
+
+            // Prioritize timer calculation if running and valid inputs are present
+            if (isRunning && !isNaN(riverWidth) && !isNaN(driftTime) && driftTime > 0) {
+                const calculatedCurrent = (riverWidth / driftTime) * 60 * nauticalMilesPerFoot;
+                currentInput.value = calculatedCurrent.toFixed(1);
+                
+                const calculatedAngle = 90 - (calculatedCurrent * 10);
+                angleInput.value = Math.round(calculatedAngle);
+                
+                const angleRad = calculatedAngle * Math.PI / 180;
+                const calculatedBoomLength = riverWidth / Math.sin(angleRad);
+                boomLengthInput.value = (Math.ceil(calculatedBoomLength / 50) * 50);
+                return;
+            }
+
+            // Fallback calculations based on user input
+            if (!isNaN(riverWidth)) {
+                if (!isNaN(currentKnots)) {
+                    // Calculation based on River Width and Current
+                    const calculatedAngle = 90 - (currentKnots * 10);
+                    angleInput.value = Math.round(calculatedAngle);
+                    
+                    const angleRad = calculatedAngle * Math.PI / 180;
+                    const calculatedBoomLength = riverWidth / Math.sin(angleRad);
+                    boomLengthInput.value = isFinite(calculatedBoomLength) ? (Math.ceil(calculatedBoomLength / 50) * 50) : '';
+                    return;
+                } else if (!isNaN(boomLength) && boomLength > 0) {
+                    // Calculation based on River Width and Boom Length
+                    const angleRad = Math.asin(riverWidth / boomLength);
+                    const calculatedAngle = angleRad * 180 / Math.PI;
+                    angleInput.value = Math.round(calculatedAngle);
+                    
+                    const calculatedCurrent = (90 - calculatedAngle) / 10;
+                    currentInput.value = calculatedCurrent.toFixed(1);
+                    return;
+                } else if (!isNaN(angle) && angle > 0 && angle <= 90) {
+                    // Calculation based on River Width and Angle
+                    const angleRad = angle * Math.PI / 180;
+                    const calculatedBoomLength = riverWidth / Math.sin(angleRad);
+                    boomLengthInput.value = isFinite(calculatedBoomLength) ? (Math.ceil(calculatedBoomLength / 50) * 50) : '';
+
+                    const calculatedCurrent = (90 - angle) / 10;
+                    currentInput.value = calculatedCurrent.toFixed(1);
                     return;
                 }
+            }
 
-                const data = {
-                    riverMile,
-                    current,
-                    driftTime,
-                    riverWidth,
-                    segments,
-                    segLength,
-                    boomLength,
-                    angle,
-                    anchorInterval,
-                    anchors,
-                    report
-                };
+            // Clear dependent fields if inputs are not valid
+            currentInput.value = '';
+            boomLengthInput.value = '';
+            angleInput.value = '';
+        }
+        
+        // Listeners for all fields to trigger recalculation
+        riverWidthInput.addEventListener('input', updateCalculatedFields);
+        currentInput.addEventListener('input', updateCalculatedFields);
+        boomLengthInput.addEventListener('input', updateCalculatedFields);
+        angleInput.addEventListener('input', updateCalculatedFields);
+        
+        document.getElementById('calculation-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            stopTimer(); // Stop the timer when the form is submitted
+            
+            const form = event.target;
+            const riverMile = parseFloat(form.riverMile.value);
+            const riverWidth = parseFloat(form.riverWidth.value);
+            const driftTime = form.driftTime.value ? parseFloat(form.driftTime.value) : null;
+            const current = parseFloat(form.current.value);
+            const boomLength = parseFloat(form.boomLength.value);
+            const angle = parseFloat(form.angle.value);
 
+            if (isNaN(riverMile) || isNaN(riverWidth) || isNaN(current) || isNaN(boomLength) || isNaN(angle)) {
+                showMessage('Please fill in all required fields with valid numbers.', 'bg-red-100 text-red-700');
+                return;
+            }
+
+            const requiredAnchors = Math.ceil(boomLength / 50);
+            const segments = requiredAnchors + 1;
+            const segmentLength = boomLength / segments;
+            const anchorInterval = boomLength / requiredAnchors;
+            const report = `River Mile: ${riverMile}, Current: ${current.toFixed(1)} knots, Boom Length: ${boomLength} ft, Angle: ${angle} degrees`;
+
+            const data = {
+                riverMile: riverMile,
+                current: current,
+                boomLength: boomLength,
+                angle: angle,
+                anchors: requiredAnchors,
+                segments: segments,
+                segmentLength: segmentLength,
+                report: report,
+                riverWidth: riverWidth,
+                driftTime: driftTime,
+                anchorInterval: anchorInterval
+            };
+
+            document.getElementById('output-riverMile').textContent = data.riverMile;
+            document.getElementById('output-current').textContent = data.current.toFixed(1);
+            document.getElementById('output-boomLength').textContent = data.boomLength;
+            document.getElementById('output-angle').textContent = data.angle;
+            document.getElementById('output-anchors').textContent = data.anchors;
+            document.getElementById('output-segments').textContent = data.segments;
+            document.getElementById('output-segmentLength').textContent = data.segmentLength.toFixed(2);
+            document.getElementById('output-report').textContent = data.report;
+            document.getElementById('output-riverWidth').textContent = data.riverWidth;
+            document.getElementById('output-driftTime').textContent = data.driftTime;
+            document.getElementById('output-anchorInterval').textContent = data.anchorInterval.toFixed(2);
+            document.getElementById('results').classList.remove('hidden');
+
+            try {
                 const response = await fetch('/api/save-report', {
                     method: 'POST',
                     headers: {
@@ -177,25 +262,35 @@
                     },
                     body: JSON.stringify(data)
                 });
-
-                if (response.ok) {
-                    const result = await response.json();
-                    displayMessage('Report saved successfully!', 'text-green-400');
-                    console.log('API Response:', result);
-                } else {
-                    const error = await response.json();
-                    displayMessage(`HTTP Error! Status: ${response.status} - Details: ${error.message}`, 'text-red-400');
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    let errorMessage = `HTTP Error! Status: ${response.status} - ${response.statusText}`;
+                    if (errorText) {
+                        try {
+                            const errorJson = JSON.parse(errorText);
+                            errorMessage = errorJson.message || errorMessage;
+                        } catch (e) {
+                            errorMessage += `\nDetails: ${errorText}`;
+                        }
+                    }
+                    throw new Error(errorMessage);
                 }
+                
+                const result = await response.json();
+                showMessage('Report saved successfully!', 'bg-green-100 text-green-700');
+                
             } catch (error) {
-                displayMessage(`An error occurred while saving the report.`, 'text-red-400');
-                console.error('Save error:', error);
+                console.error('Error:', error);
+                showMessage(error.message, 'bg-red-100 text-red-700');
             }
-        }
+        });
 
-        function displayMessage(message, colorClass) {
-            const messageElement = document.getElementById('message');
-            messageElement.textContent = message;
-            messageElement.className = `mt-6 text-center text-sm font-medium ${colorClass}`;
+        function showMessage(message, classes) {
+            const messageBox = document.getElementById('message-box');
+            messageBox.textContent = message;
+            messageBox.className = `mt-4 p-4 rounded-md ${classes}`;
+            messageBox.classList.remove('hidden');
         }
     </script>
 </body>
